@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"time"
 
 	"github.com/Nurbakhyt22/GoProject1/internal/model"
@@ -30,4 +31,22 @@ func (cr *CourseRepo) GetAll() ([]model.Course, error) {
 	}
 
 	return courses, nil
+}
+
+func (cr *CourseRepo) GetById(id int) (model.Course, error) {
+	course, ok := cr.coursesMap[id]
+	if !ok {
+		return model.Course{}, errors.New("course not found")
+	}
+
+	return course, nil
+}
+
+func (cr *CourseRepo) Delete(id int) error {
+	if _, ok := cr.coursesMap[id]; !ok {
+		return errors.New("course not found")
+	}
+
+	delete(cr.coursesMap, id)
+	return nil
 }

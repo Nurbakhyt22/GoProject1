@@ -18,6 +18,8 @@ func main() {
 	router := gin.New()
 
 	router.GET("/api/courses", courseHandler.GetAll)
+	router.GET("/api/courses/:id", courseHandler.GetById)
+	router.DELETE("/api/courses/:id", courseHandler.Delete)
 
 	srv := &http.Server{Addr: ":8080", Handler: router}
 
