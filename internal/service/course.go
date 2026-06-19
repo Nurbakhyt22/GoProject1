@@ -9,15 +9,15 @@ import (
 )
 
 type CourseService struct {
-	repo *repository.CourseRepo
+	repo repository.CourseRepoI
 }
 
-func NewCourseService(courseRepo *repository.CourseRepo) *CourseService {
-	service := CourseService{
+func NewCourseService(courseRepo repository.CourseRepoI) *CourseService {
+	service := &CourseService{
 		repo: courseRepo,
 	}
 
-	return &service
+	return service
 }
 
 func (cs *CourseService) GetAll() ([]model.Course, error) {
@@ -60,7 +60,7 @@ func (cs *CourseService) Create(input model.CreateCourseInput) (int, error) {
 }
 
 func (cs *CourseService) Update(id int, input model.UpdateCourseInput) (model.Course, error) {
-	
+
 	_, err := cs.repo.GetById(id)
 	if err != nil {
 		return model.Course{}, errors.New("course is not found")

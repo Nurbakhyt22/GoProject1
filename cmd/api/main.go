@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Nurbakhyt22/GoProject1/internal/config"
 	"github.com/Nurbakhyt22/GoProject1/internal/handler"
 	"github.com/Nurbakhyt22/GoProject1/internal/repository"
 	"github.com/Nurbakhyt22/GoProject1/internal/service"
@@ -11,6 +12,12 @@ import (
 )
 
 func main() {
+
+	cfg, err := config.Load()
+	if err != nil {
+		return
+	}
+
 	courseRepo := repository.NewCourseRepo()
 	courseService := service.NewCourseService(courseRepo)
 	courseHandler := handler.NewCourseHandler(courseService)
@@ -23,7 +30,7 @@ func main() {
 	router.POST("/api/courses/", courseHandler.Create)
 	router.PUT("/api/courses/:id", courseHandler.Update)
 
-	srv := &http.Server{Addr: ":8080", Handler: router}
+	srv := &http.Server{Addr: ":" + cfg.Port, Handler: router}
 
 	if err := srv.ListenAndServe(); err != nil {
 		fmt.Println("Server error")
