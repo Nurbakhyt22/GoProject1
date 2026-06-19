@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Nurbakhyt22/GoProject1/internal/model"
 	"github.com/Nurbakhyt22/GoProject1/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -52,4 +53,46 @@ func (ch *CourseHandler) Delete(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Course deleted"})
+}
+
+func (ch *CourseHandler) Create(c *gin.Context) {
+
+	var input model.CreateCourseInput
+	err := c.ShouldBindJSON(input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	newId, err := ch.service.Create(input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Some error"})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"id": newId})
+
+}
+
+func (ch *CourseHandler) Update(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID parameter"})
+		return
+	}
+
+	var input model.UpdateCourseInput
+	err = c.ShouldBindJSON(&input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	course, err := ch.service.Update(id, input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Some error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, course)
+
 }

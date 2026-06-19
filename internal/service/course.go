@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"time"
 
 	"github.com/Nurbakhyt22/GoProject1/internal/model"
 	"github.com/Nurbakhyt22/GoProject1/internal/repository"
@@ -36,4 +37,42 @@ func (cs *CourseService) Delete(id int) error {
 		return errors.New("Invalid ID")
 	}
 	return cs.repo.Delete(id)
+}
+
+func (cs *CourseService) Create(input model.CreateCourseInput) (int, error) {
+	if len(input.Title) < 3 {
+		return 0, errors.New("course title is very short")
+	}
+	if input.Price < 0 {
+		return 0, errors.New("course price can not be negative")
+	}
+
+	course := model.Course{
+		Title:     input.Title,
+		Price:     input.Price,
+		IsActive:  input.IsActive,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	return cs.repo.Create(course)
+
+}
+
+func (cs *CourseService) Update(id int, input model.UpdateCourseInput) (model.Course, error) {
+	
+	_, err := cs.repo.GetById(id)
+	if err != nil {
+		return model.Course{}, errors.New("course is not found")
+	}
+
+	if input.Title != nil && len(*input.Title) < 3 {
+		return model.Course{}, errors.New("course title is very short")
+	}
+
+	if input.Price != nil && *input.Price < 0 {
+		return model.Course{}, errors.New("course price can not be negative")
+	}
+
+	return cs.repo.Update(id, input)
 }

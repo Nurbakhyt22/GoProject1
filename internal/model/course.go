@@ -19,7 +19,7 @@ type CreateCourseInput struct {
 }
 
 type UpdateCourseInput struct {
-	Title    string `json:"title"`
-	Price    int    `json:"price"`
-	IsActive bool   `json:"is_active"`
+	Title    *string `json:"title"`
+	Price    *int    `json:"price"`
+	IsActive *bool   `json:"is_active"`
 }
